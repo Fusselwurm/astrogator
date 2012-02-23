@@ -1,5 +1,5 @@
 
-var ASTROGATOR = {};
+ASTROGATOR = ASTROGATOR || {};
 
 /**
  * This is the number of the beast:
@@ -53,4 +53,3 @@ ASTROGATOR.grav = function (mass1, mass2, dist) {
 	// F = G * m1 * m2 * r^-2
 	return ASTROGATOR.G * mass1 * mass2 / dist / dist;
 };
-
