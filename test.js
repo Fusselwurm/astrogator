@@ -61,3 +61,20 @@ ASTROGATOR.grav(5.9742e24 /*earth's mass*/, 100 /*your mom's weight*/, 6370000 /
  *   position (ein punkt),
  *   geschwindigkeit, richtung. (ein vektor)
  */
+
+b1 = {
+	mass: 1e10,
+	position: [0, 0, 0],
+	vector: [0, 0, 0]
+};
+
+b2 = {
+	mass: 5e10,
+	position: [100, 0],
+	vector: [0, 0, 0]
+};
+
+
+for (var i = 0; i < 50; i ++) {
+	move([b1, b2], 200);
+}

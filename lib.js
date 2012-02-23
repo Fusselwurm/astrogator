@@ -1,5 +1,5 @@
 
-ASTROGATOR = ASTROGATOR || {};
+window.ASTROGATOR = window.ASTROGATOR || {};
 
 /**
  * This is the number of the beast:
@@ -53,3 +53,51 @@ ASTROGATOR.grav = function (mass1, mass2, dist) {
 	// F = G * m1 * m2 * r^-2
 	return ASTROGATOR.G * mass1 * mass2 / dist / dist;
 };
+
+
+
+/**
+ * TODO only works for two bodies right now. bad!
+ *
+ * @param bodies Array of bodies.
+ * @param dTime
+ */
+function move(bodies, dTime) {
+
+	var
+		c = [{}, {}],
+		// positional difference as vector
+		pDiff = ASTROGATOR.vector.diff(b1.position, b2.position),
+		uv = ASTROGATOR.vector.toUnitVector(pDiff),
+
+		// now, the force:
+		force = ASTROGATOR.grav(bodies[0].mass, bodies[1].mass, ASTROGATOR.vector.length(pDiff));
+
+		// drives both masses against each other!
+		// so: whats their acceleration?
+
+	bodies.forEach(function (b, i) {
+		c[i].accel = force / b.mass;
+	});
+
+	dTime = dTime || 1;
+
+	// change bodies' vectors
+	c.forEach(function (b, i) {
+		b.dV = b.accel * dTime;
+		if (i === 0) {
+			bodies[i].vector = ASTROGATOR.vector.add(bodies[i].vector, ASTROGATOR.vector.multiply(b.dV, uv));
+		} else if (i === 1) {
+			bodies[i].vector = ASTROGATOR.vector.add(bodies[i].vector, ASTROGATOR.vector.multiply(b.dV, ASTROGATOR.vector.invert(uv)));
+		} else {
+			throw 'aaaaaaaaargs YOU MUST NOT HAVE MORE THAN TWO BODIES';
+		}
+	});
+
+	bodies.forEach(function (b, i) {
+		b.position = ASTROGATOR.vector.add(b.position, b.vector);
+		console.log('pos ' + (i % 2 ? i + '             ' : i) + ': ' + b.position.join(':'));
+	});
+
+}
+

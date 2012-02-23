@@ -1,6 +1,10 @@
 // vector functions
 
-ASTROGATOR = ASTROGATOR || {};
+// OMFG
+// what am I doing?
+// I should have a vector class, not separate functions buried deeeep in some lib
+
+window.ASTROGATOR = window.ASTROGATOR || {};
 
 ASTROGATOR.vector = {};
 
@@ -27,11 +31,16 @@ ASTROGATOR.vector.add = (function () {
 			return res;
 		};
 
-	return function add (v1, v2/*, v3, v4, ...*/) {
+	return function add(v1, v2/*, v3, v4, ...*/) {
 		return Array.prototype.reduce.call(arguments, red);
 	};
 }());
 
+ASTROGATOR.vector.diff = function (v1, v2) {
+	return v2.map(function (v, i) {
+		return v - v1[i];
+	});
+};
 
 /**
  * attitude of two points towards each other
@@ -41,13 +50,7 @@ ASTROGATOR.vector.add = (function () {
  * @param p2
  */
 ASTROGATOR.vector.attitude = function (p1, p2) {
-
-	var
-		diff = p2.map(function (v, i) {
-			return v - p1[i];
-		});
-
-	return ASTROGATOR.vector.toUnitVector(diff);
+	return ASTROGATOR.vector.toUnitVector(ASTROGATOR.vector.diff(p1, p2));
 };
 
 
@@ -60,6 +63,12 @@ ASTROGATOR.vector.attitude = function (p1, p2) {
 ASTROGATOR.vector.invert = function (v) {
 	return v.map(function (v) {
 		return -v;
+	});
+};
+
+ASTROGATOR.vector.multiply = function (scalar, v) {
+	return v.map(function (v) {
+		return v * scalar;
 	});
 };
 
