@@ -1,11 +1,77 @@
 <html>
 <head>
 	<title>astrogat0r</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript" src="./vector.js"></script>
 	<script type="text/javascript" src="./lib.js"></script>
 	<script type="text/javascript" src="./test.js"></script>
+	<style type="text/css">
+		canvas {border: 5px solid black;}
+	</style>
 </head>
 <body>
+<h1>buttons</h1>
+<button id="btnClear">clear</button>
+<button id="btnGo">go</button>
 
+<h2>canvas</h2>
+
+<canvas id="space"  width="500" height="500"></canvas>
+
+<script type="text/javascript">
+
+var cnvs = document.getElementById('space');
+var ctx = cnvs.getContext('2d');
+ctx.fillStyle = "rgba(255, 255, 0, 1)";
+
+scale = 1;
+move.onChange(function (body) {
+
+	var posTranslated = body.position.map(function (v) {
+		return v * scale;
+	});
+
+	switch (body.name) {
+		case 0: ctx.fillStyle = "rgba(0, 255, 0, 1)"; break;
+		case 1: ctx.fillStyle = "rgba(255, 0, 0, 1)"; break;
+	}
+
+	ctx.fillRect(posTranslated[0] - 1, posTranslated[0] - 1, posTranslated[1] + 1, posTranslated[1] + 1);
+});
+
+</script>
+
+<script type="text/javascript">
+
+
+	b1 = {
+		name: 0,
+		mass: 1e10,
+		position: [5, 5, 5],
+		vector: [0, 0, 0]
+	};
+
+	b2 = {
+		name: 1,
+		mass: 5e10,
+		position: [100, 5, 5],
+		vector: [0, 0, 0]
+	};
+
+	$(document).ready(function () {
+		$('#btnGo').click(function () {
+			for (var i = 0; i < 50; i ++) {
+				move([b1, b2], 200);
+			}
+		});
+		$('#btnClear').click(function () {
+			ctx.clearRect(0, 0, 500, 500);
+			b1.position = [5, 5, 5];
+			b1.vector = [0, 0, 0];
+			b2.position = [100, 5, 5];
+			b2.vector = [0, 0, 0];
+		});
+	})
+</script>
 </body>
 </html>

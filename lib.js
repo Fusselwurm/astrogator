@@ -96,8 +96,16 @@ function move(bodies, dTime) {
 
 	bodies.forEach(function (b, i) {
 		b.position = ASTROGATOR.vector.add(b.position, b.vector);
+		move.onChange.callbacks.forEach(function (fn) {
+			fn(b);
+		});
 		console.log('pos ' + (i % 2 ? i + '             ' : i) + ': ' + b.position.join(':'));
 	});
 
 }
 
+move.onChange = function (fn) {
+	move.onChange.callbacks.push(fn);
+};
+
+move.onChange.callbacks = [];
