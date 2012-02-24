@@ -99,7 +99,7 @@ function move(bodies, dTime) {
 		move.onChange.callbacks.forEach(function (fn) {
 			fn(b);
 		});
-		console.log('pos ' + (i % 2 ? i + '             ' : i) + ': ' + b.position.join(':'));
+		//console.log('pos ' + (i % 2 ? i + '             ' : i) + ': ' + b.position.join(':'));
 	});
 
 }
