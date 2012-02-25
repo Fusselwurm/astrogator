@@ -41,7 +41,7 @@ var Vector = function (values) {
 	 * @return Vector
 	 */
 	this.diff = function (v) {
-		return this.add(v.invert())
+		return this.add(v.invert());
 	};
 
 	/**

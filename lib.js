@@ -54,7 +54,6 @@ ASTROGATOR.grav = function (mass1, mass2, dist) {
 	return ASTROGATOR.G * mass1 * mass2 / dist / dist;
 };
 
-
 /**
  * TODO only works for two bodies right now. bad!
  *
@@ -64,37 +63,34 @@ ASTROGATOR.grav = function (mass1, mass2, dist) {
 function move(bodies, dTime) {
 
 	var
-		c = [{}, {}],
-		// positional difference as vector
-		pDiff = bodies[0].position.diff(bodies[1].position),
-		uv = pDiff.toUnitVector(),
-
-		// now, the force:
-		force = ASTROGATOR.grav(bodies[0].mass, bodies[1].mass, pDiff.norm());
-
-		// drives both masses against each other!
-		// so: whats their acceleration?
-
-	bodies.forEach(function (b, i) {
-		c[i].accel = force / b.mass;
-	});
+		getVectorChange = function (b1, b2) {
+			var
+				// positional difference as vector
+				pDiff = b1.position.diff(b2.position);
+				// now, the direction multiplied by the force:
+			return pDiff.toUnitVector().multiply(ASTROGATOR.grav(b1.mass, b2.mass, pDiff.norm()));
+		},
+		i, j,
+		vc;
 
 	dTime = dTime || 1;
 
-	// change bodies' vectors
-	c.forEach(function (b, i) {
-		b.dV = b.accel * dTime;
-		if (i === 1) {
-			bodies[i].vector = bodies[i].vector.add(uv.multiply(b.dV));
-		} else if (i === 0) {
-			bodies[i].vector = bodies[i].vector.add(uv.multiply(b.dV).invert(uv));
-		} else {
-			throw 'aaaaaaaaargs YOU MUST NOT HAVE MORE THAN TWO BODIES';
+	for (i = 0; i < bodies.length; i += 1) {
+		for (j = i + 1; j < bodies.length; j += 1) {
+			if (i !== j) {
+				vc = getVectorChange(bodies[i], bodies[j]);
+				bodies[i].vector = bodies[i].vector.add(vc.multiply(dTime / bodies[i].mass).invert());
+				bodies[j].vector = bodies[j].vector.add(vc.multiply(dTime / bodies[j].mass));
+			} else {
+				throw 'wtf';
+			}
+
+
 		}
-	});
+	}
 
 	bodies.forEach(function (b) {
-		b.position = b.position.add(b.vector);
+		b.position = b.position.add(b.vector.multiply(dTime));
 		move.onChange.callbacks.forEach(function (fn) {
 			fn(b);
 		});
