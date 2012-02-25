@@ -27,7 +27,7 @@ ASTROGATOR.systems = {
 		},
 		{
 			name: 'Venus',
-			mass: 48685e24,
+			mass: 4.8685e24,
 			aphelion: 108942109000,
 			perihelion: 107476259000,
 			average_orbital_velocity: 35020
@@ -38,6 +38,18 @@ ASTROGATOR.systems = {
 			aphelion: 152098232000,
 			perihelion: 147098290000,
 			average_orbital_velocity: 29780
+		}, {
+			name: 'Mars',
+			mass: 6.4185e23,
+			aphelion: 249209300000,
+			perihelion: 206669000000,
+			average_orbital_velocity: 24077
+		}, {
+			name: 'Jupiter',
+			mass: 1.8986e27,
+			aphelion: 816520800000,
+			perihelion: 740573600000,
+			average_orbital_velocity: 13070
 		}
 		// ...
 	]
