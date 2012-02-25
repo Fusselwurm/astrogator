@@ -11,7 +11,10 @@ window.ASTROGATOR = window.ASTROGATOR || {};
 ASTROGATOR.G = 6.67384e-11;
 
 ASTROGATOR.systems = {
-	sol: [
+	sol: [{
+			name: 'Sun',
+			mass: 1.9891e30
+		},
 		// interesting question: which numbers do we want for each of the planets?
 		//  including eccentricity and other things seems a bit complicated for the start
 		//  as do variations in orbital speed and other things

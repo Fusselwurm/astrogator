@@ -1,7 +1,8 @@
 <html>
 <head>
 	<title>astrogat0r</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript" src="./vector.js"></script>
 	<script type="text/javascript" src="./lib.js"></script>
 	<script type="text/javascript" src="./test.js"></script>
@@ -16,73 +17,83 @@
 <button id="btnClear">clear</button>
 <button id="btnStop">stop</button>
 <button id="btnGo">go</button>
-<label for="inpScale" >scale (e10)</label><input id="inpScale" type="range" min="-11" max="11" value="0"/><span id="inpScaleShow"></span>
+<label for="inpScale">scale (e10)</label><input id="inpScale" type="range"
+						min="-22" max="22"
+						value="0"/><span
+    id="inpScaleShow"></span>
 
 <h2>canvas</h2>
 
-<canvas id="space"  width="500" height="500"></canvas>
+<canvas id="space" width="500" height="500"></canvas>
 
 <script type="text/javascript">
 
-var cnvs = document.getElementById('space');
-var ctx = cnvs.getContext('2d');
-ctx.fillStyle = "rgba(255, 255, 0, 1)";
+	var cnvs = document.getElementById('space');
+	var ctx = cnvs.getContext('2d');
+	ctx.fillStyle = "rgba(255, 255, 0, 1)";
 
-var scale = 1;
-move.onChange((function () {
-	//var cnt = {};
-	return function (body) {
-/*		cnt[body.name] = (cnt[body.name] || 0) + 1;
-		if (cnt[body.name] % 5) {
-			return;
-		}*/
+	var scale = 1e-20;
+	move.onChange((function () {
+		//var cnt = {};
+		return function (body) {
+			/*		cnt[body.name] = (cnt[body.name] || 0) + 1;
+			 if (cnt[body.name] % 5) {
+			 return;
+			 }*/
 
-		var posTranslated = body.position.map(function (v) {
-			return (v * scale) + 250;
-		});
+			var
+			    posTranslated = body.position.map(function (v) {
+				    return (v * scale) + 250;
+			    }),
+			    getColor = function (b) {
+				    return [
+					    b.mass % 255,
+					    b.name.charCodeAt(0),
+					    b.vector.norm() % 255
+				    ].map(function (n) {
+					    return Math.floor(n);
+				    });
+			    },
+			    c = getColor(body);
 
-		switch (body.name) {
-			case 0: ctx.fillStyle = "rgba(0, 255, 0, 1)"; break;
-			case 1: ctx.fillStyle = "rgba(255, 0, 0, 1)"; break;
-			case 2: ctx.fillStyle = "rgba(0, 0, 255, 1)"; break;
-			default: throw 'mwahah';
-		}
+			ctx.fillStyle = "rgba(" + c.join(',') + ", 1)";
 
-		ctx.fillRect(posTranslated[0], posTranslated[1], 5, 5);
-	};
-}()));
+			ctx.fillRect(posTranslated[0], posTranslated[1], 5, 5);
+		};
+	}()));
 
 </script>
 
 <script type="text/javascript">
 
-	var tick = 0;
+	var tick = 0,
 
-	b1 = {
-		name: 0,
-		mass: 1e12,
-		position: new Vector([-50, -60, 200]),
-		vector: new Vector([0, 0.75, 0])
-	};
+	    bodies = (function () {
+		    var s = ASTROGATOR.systems.sol,
+			bodies = [
+				{
+					name: s[0].name,
+					mass: s[0].mass,
+					position: new Vector([0, 0, 0]),
+					vector: new Vector([0, 0, 0])
+				}
+			];
 
-	b2 = {
-		name: 1,
-		mass: 5e12,
-		position: new Vector([0, 0, 5]),
-		vector: new Vector([.02, -0.15, .02])
-	};
+		    return bodies.concat(s.slice(1).map(function (planet) {
+			    return {
+				    mass: planet.mass,
+				    name: planet.name,
+				    position: new Vector([-planet.perihelion, 0, 0]),
+				    vector: new Vector([0, s[1].average_orbital_velocity, 0])
+			    };
+		    }));
+	    }());
 
-	b3 = {
-		name: 2,
-		mass: 1e10,
-		position: new Vector([50, 50, 5]),
-		vector: new Vector([0, -1, 0])
-	};
 
 	$(document).ready(function () {
 		$('#btnGo').click(function () {
-		    	tick = setInterval(function () {
-				move([b1, b2, b3], 1);
+			tick = setInterval(function () {
+				move(bodies, 1000);
 			}, 0);
 		});
 		$('#btnStop').click(function () {
@@ -93,7 +104,7 @@ move.onChange((function () {
 		});
 
 
-		$('#inpScale').change(function () {
+		$('#inpScale').val(Math.pow(10, 1 / scale)).change(function () {
 			scale = Math.pow(10, this.value);
 			ctx.clearRect(0, 0, 500, 500);
 			$('#inpScaleShow').text(scale);
