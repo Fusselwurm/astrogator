@@ -58,7 +58,7 @@
 
 			ctx.fillStyle = "rgba(" + c.join(',') + ", 1)";
 
-			ctx.fillRect(posTranslated[0], posTranslated[1], 5, 5);
+			ctx.fillRect(posTranslated[0], posTranslated[1], 2, 2);
 		};
 	}()));
 
@@ -80,13 +80,24 @@
 			];
 
 		    return bodies.concat(s.slice(1).map(function (planet, i) {
-			    var dist = (planet.perihelion + planet.aphelion) / 2;
+			    var
+				dist = (planet.periapsis + planet.apoapsis) / 2,
+				position,
+				vector;
+
+			    if (planet.orbital_reference === 'Sol') {
+				    position = new Vector(i % 2 ? [-dist, 0, 0] : [dist, 0, 0]);
+				    vector = new Vector(i % 2 ? [0, planet.average_orbital_velocity, 0]: [0, -planet.average_orbital_velocity, 0]);
+			    } else {
+				   return;
+			    }
+
 			    return {
 				    mass: planet.mass,
 				    name: planet.name,
 				    // ok this is stupid, should distribute planets smart
-				    position: new Vector(i % 2 ? [-dist, 0, 0] : [dist, 0, 0]),
-				    vector: new Vector(i % 2 ? [0, planet.average_orbital_velocity, 0]: [0, -planet.average_orbital_velocity, 0])
+				    position: position,
+				    vector: vector
 			    };
 		    }));
 	    }());
@@ -111,15 +122,15 @@
 			ctx.clearRect(0, 0, 500, 500);
 			$('#inpScaleShow').text(scale);
 
-		}).attr('value', Math.round(Math.log(scale) / Math.LN10))
+		}).attr('value', Math.round(Math.log(scale) / Math.LN10));
 
 
 
 		setInterval(function () {
-			ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+			ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
 			ctx.fillRect(0, 0, 500, 500);
 		}, 1000);
-	})
+	});
 </script>
 </body>
 </html>

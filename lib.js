@@ -12,7 +12,7 @@ ASTROGATOR.G = 6.67384e-11;
 
 ASTROGATOR.systems = {
 	sol: [{
-			name: 'Sun',
+			name: 'Sol',
 			mass: 1.9891e30
 		},
 		// interesting question: which numbers do we want for each of the planets?
@@ -21,35 +21,47 @@ ASTROGATOR.systems = {
 		{
 			name: 'Mercury',
 			mass: 3.3022e23, // [kg]
-			aphelion: 69816900000, // [m]
-			perihelion: 46001200000, // [m]
-			average_orbital_velocity: 47870 // [m/s]
+			apoapsis: 69816900000, // [m]
+			periapsis: 46001200000, // [m]
+			average_orbital_velocity: 47870, // [m/s]
+			orbital_reference: 'Sol'
 		},
 		{
 			name: 'Venus',
 			mass: 4.8685e24,
-			aphelion: 108942109000,
-			perihelion: 107476259000,
-			average_orbital_velocity: 35020
+			apoapsis: 108942109000,
+			periapsis: 107476259000,
+			average_orbital_velocity: 35020,
+			orbital_reference: 'Sol'
 		},
 		{
 			name: 'Terra',
 			mass: 5.9736e24,
-			aphelion: 152098232000,
-			perihelion: 147098290000,
-			average_orbital_velocity: 29780
+			apoapsis: 152098232000,
+			periapsis: 147098290000,
+			average_orbital_velocity: 29780,
+			orbital_reference: 'Sol'
+		}, {
+			name: 'Luna',
+			mass: 7.349e22,
+			average_orbital_velocity: 1023,
+			periapsis:	363300000,
+			apoapsis:	405500000,
+			orbital_reference: 'Terra'
 		}, {
 			name: 'Mars',
 			mass: 6.4185e23,
-			aphelion: 249209300000,
-			perihelion: 206669000000,
-			average_orbital_velocity: 24077
+			apoapsis: 249209300000,
+			periapsis: 206669000000,
+			average_orbital_velocity: 24077,
+			orbital_reference: 'Sol'
 		}, {
 			name: 'Jupiter',
 			mass: 1.8986e27,
-			aphelion: 816520800000,
-			perihelion: 740573600000,
-			average_orbital_velocity: 13070
+			apoapsis: 816520800000,
+			periapsis: 740573600000,
+			average_orbital_velocity: 13070,
+			orbital_reference: 'Sol'
 		}
 		// ...
 	]
