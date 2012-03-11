@@ -10,6 +10,10 @@
 		canvas {
 			border: 5px solid black;
 		}
+
+		input[id=inpScale] {
+			width: 400px;
+		}
 	</style>
 </head>
 <body>
@@ -19,7 +23,9 @@
 <button id="btnGo">go</button>
 <label for="inpScale">scale (e10)</label><input id="inpScale" type="range"
 						min="-22" max="22"
-						value="0"/><span
+						step="0.5"
+						value="0"
+    /><span
     id="inpScaleShow"></span>
 
 <h2>canvas</h2>
