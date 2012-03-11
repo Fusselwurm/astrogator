@@ -27,7 +27,7 @@
 						value="0"
     /><span
     id="inpScaleShow"></span>
-
+<input id="inpAttachedTo"  type="text" disabled="disabled" value="---" />
 <h2>canvas</h2>
 
 <canvas id="space" width="500" height="500"></canvas>
@@ -37,24 +37,37 @@
 	var
 		scale = 1e-10,
 		translation = new Vector([0, 0, 0]), // in meters!
+	    	attachedTo = null,
 		cnvs = document.getElementById('space'),
 		ctx = cnvs.getContext('2d');
 
 	ctx.fillStyle = "rgba(255, 255, 0, 1)";
 
+	function canvasPointToSpacePoint(v) {
+		return new Vector(v.
+		    map(function (v) {
+			return (v - 250) / scale;
+		})).add(translation.invert());
+	}
+
+	function spacePointToCanvasPoint(v) {
+		return new Vector(v.
+		    add(translation.invert()).
+		    map(function (v) {
+			    return (v * scale) + 250;
+		    }));
+	}
 
 	move.onChange((function () {
 		//var cnt = {};
 		return function (body) {
-			/*		cnt[body.name] = (cnt[body.name] || 0) + 1;
-			 if (cnt[body.name] % 5) {
-			 return;
-			 }*/
+
+			if (attachedTo) {
+				translation = attachedTo.position;
+			}
 
 			var
-			    posTranslated = body.position.add(translation).map(function (v) {
-				    return (v * scale) + 250;
-			    }),
+			    posTranslated = spacePointToCanvasPoint(body.position),
 			    getColor = function (b) {
 				    return [
 					    b.mass % 255,
@@ -122,18 +135,34 @@
 		}).attr('value', Math.round(Math.log(scale) / Math.LN10));
 
 		$('#space').mousedown(function (event) {
-			var from = [event.pageX, event.pageY];
-			$(this).one({
-				mouseup: function (event) {
-					var diff = [
-						event.pageX - from[0],
-						event.pageY - from[1]
-					];
+				var from = [event.pageX, event.pageY];
+				$(this).one({
+					mouseup: function (event) {
+						var diff = [
+							event.pageX - from[0],
+							event.pageY - from[1],
+						    	0
+						];
 
-					translation = translation.add((new Vector (diff)).multiply(1 / scale));
-				}
+						translation = translation.add((new Vector (diff)).multiply(1 / scale));
+					}
+				});
+			}).dblclick(function (event) {
+			    // attach to object
+			    var
+				minDiff = Infinity,
+				cnvsoffset = $(this).offset(),
+				point = canvasPointToSpacePoint(new Vector([event.offsetX, event.offsetY, 0]));
+			    attachedTo = s.reduce(function (prev, body) {
+				    var tmp = body.position.diff(point).norm();
+				    if (tmp < minDiff) {
+					    minDiff = tmp;
+					    return body;
+				    }
+				    return prev;
+			    }, null);
+			    $('#inpAttachedTo').val(attachedTo.name || '???');
 			});
-		});
 
 
 
