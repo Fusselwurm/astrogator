@@ -67,6 +67,21 @@ ASTROGATOR.systems = {
 	]
 };
 
+var getByName = function (name) {
+	var objects = this.filter(function (v) {
+		return v.name === name;
+	});
+	return objects[0] || null;
+};
+
+// add getByName method to each system
+for (var n in ASTROGATOR.systems) {
+	if (ASTROGATOR.systems.hasOwnProperty(n)) {
+		ASTROGATOR.systems[n].getByName = getByName;
+	}
+}
+
+
 
 /**
  * calculate attracting force between two masses at a certain distance

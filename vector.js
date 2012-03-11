@@ -1,5 +1,6 @@
 
 /**
+ * Euclidian vector
  *
  * @param values Array (optional)
  */

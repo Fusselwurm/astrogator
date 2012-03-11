@@ -66,47 +66,34 @@
 
 <script type="text/javascript">
 
-	var tick = 0,
+	var
+	    	tick = 0,
+	    	s = ASTROGATOR.systems.sol;
 
-	    bodies = (function () {
-		    var s = ASTROGATOR.systems.sol,
-			bodies = [
-				{
-					name: s[0].name,
-					mass: s[0].mass,
-					position: new Vector([0, 0, 0]),
-					vector: new Vector([0, 0, 0])
-				}
-			];
+	s.forEach(function (body, i) {
+		var
+		    reference = s.getByName(body.orbital_reference),
+		    dist = (body.periapsis + body.apoapsis) / 2,
+		    position,
+		    vector;
 
-		    return bodies.concat(s.slice(1).map(function (planet, i) {
-			    var
-				dist = (planet.periapsis + planet.apoapsis) / 2,
-				position,
-				vector;
+		if (reference) {
+			// ok this is stupid, should distribute planets smarter
+			body.position = reference.position.add(new Vector(i % 2 ? [-dist, 0, 0] : [dist, 0, 0]));
+			body.vector = reference.vector.add(new Vector(i % 2 ? [0, body.average_orbital_velocity, 0]: [0, -body.average_orbital_velocity, 0]));
+		} else {
+			// which is the case for Sol, b/c it is not assumed to be in orbit around anything here
+			body.position = new Vector([0, 0, 0]);
+			body.vector = new Vector([0, 0, 0]);
+		}
 
-			    if (planet.orbital_reference === 'Sol') {
-				    position = new Vector(i % 2 ? [-dist, 0, 0] : [dist, 0, 0]);
-				    vector = new Vector(i % 2 ? [0, planet.average_orbital_velocity, 0]: [0, -planet.average_orbital_velocity, 0]);
-			    } else {
-				   return;
-			    }
 
-			    return {
-				    mass: planet.mass,
-				    name: planet.name,
-				    // ok this is stupid, should distribute planets smart
-				    position: position,
-				    vector: vector
-			    };
-		    }));
-	    }());
-
+	});
 
 	$(document).ready(function () {
 		$('#btnGo').click(function () {
 			tick = setInterval(function () {
-				move(bodies, 1000);
+				move(s, 1000);
 			}, 0);
 		});
 		$('#btnStop').click(function () {
