@@ -34,11 +34,15 @@
 
 <script type="text/javascript">
 
-	var cnvs = document.getElementById('space');
-	var ctx = cnvs.getContext('2d');
+	var
+		scale = 1e-10,
+		translation = new Vector([0, 0, 0]), // in meters!
+		cnvs = document.getElementById('space'),
+		ctx = cnvs.getContext('2d');
+
 	ctx.fillStyle = "rgba(255, 255, 0, 1)";
 
-	var scale = 1e-10;
+
 	move.onChange((function () {
 		//var cnt = {};
 		return function (body) {
@@ -48,7 +52,7 @@
 			 }*/
 
 			var
-			    posTranslated = body.position.map(function (v) {
+			    posTranslated = body.position.add(translation).map(function (v) {
 				    return (v * scale) + 250;
 			    }),
 			    getColor = function (b) {
@@ -78,10 +82,10 @@
 
 	s.forEach(function (body, i) {
 		var
-		    reference = s.getByName(body.orbital_reference),
-		    dist = (body.periapsis + body.apoapsis) / 2,
-		    position,
-		    vector;
+			reference = s.getByName(body.orbital_reference),
+			dist = (body.periapsis + body.apoapsis) / 2,
+			position,
+			vector;
 
 		if (reference) {
 			// ok this is stupid, should distribute planets smarter
@@ -116,6 +120,20 @@
 			$('#inpScaleShow').text(scale);
 
 		}).attr('value', Math.round(Math.log(scale) / Math.LN10));
+
+		$('#space').mousedown(function (event) {
+			var from = [event.pageX, event.pageY];
+			$(this).one({
+				mouseup: function (event) {
+					var diff = [
+						event.pageX - from[0],
+						event.pageY - from[1]
+					];
+
+					translation = translation.add((new Vector (diff)).multiply(1 / scale));
+				}
+			});
+		});
 
 
 
