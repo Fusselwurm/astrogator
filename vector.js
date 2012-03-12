@@ -79,6 +79,21 @@ var Vector = function (values) {
 	};
 
 	/**
+	 * rotates in the cartesian plane (first to coordinates ;P)
+	 * @param rad
+	 */
+	this.rotateCartesian = function (rad) {
+		var
+			rotated = this.map(function (v) {return v;}),
+			x = rotated[0],
+			y = rotated[1];
+
+		rotated[0] = x * Math.cos(rad) - y * Math.sin(rad);
+		rotated[1] = x * Math.sin(rad) + y * Math.cos(rad);
+		return new Vector(rotated);
+	};
+
+	/**
 	 * return vector length (as in "how long is this arrow")
 	 * @return number
 	 */
